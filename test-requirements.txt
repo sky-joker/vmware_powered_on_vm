@@ -1,0 +1,5 @@
+tox
+ansible-core
+ansible-lint
+yamllint
+molecule

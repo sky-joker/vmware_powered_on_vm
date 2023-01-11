@@ -1,0 +1,32 @@
+---
+- name: VM powered on
+  community.vmware.vmware_guest:
+    hostname: "{{ vcenter_hostname | default(lookup('env', 'VMWARE_HOST')) }}"
+    username: "{{ vcenter_username | default(lookup('env', 'VMWARE_USER')) }}"
+    password: "{{ vcenter_password | default(lookup('env', 'VMWARE_PASSWORD')) }}"
+    validate_certs: "{{ validate_certs | default(false) }}"
+    datacenter: "{{ datacenter_name }}"
+    folder: "{{ vm_folder | default('vm') }}"
+    name: "{{ item.vm_name }}.{{ domain }}"
+    state: poweredon
+  loop: "{{ target_vm_info }}"
+
+- name: Wait until starting vmware tools
+  community.vmware.vmware_guest_tools_info:
+    hostname: "{{ vcenter_hostname | default(lookup('env', 'VMWARE_HOST')) }}"
+    username: "{{ vcenter_username | default(lookup('env', 'VMWARE_USER')) }}"
+    password: "{{ vcenter_password | default(lookup('env', 'VMWARE_PASSWORD')) }}"  # noqa no-log-password
+    validate_certs: "{{ validate_certs | default(false) }}"
+    datacenter: "{{ datacenter_name }}"
+    name: "{{ item.vm_name + '.' + domain }}"
+  register: get_vm_tools_info_result
+  until: get_vm_tools_info_result.vmtools_info.vm_tools_running_status == "guestToolsRunning"
+  retries: 300
+  delay: 10
+  loop: "{{ target_vm_info }}"
+
+- name: Wait for port 22 to be open
+  ansible.builtin.wait_for:
+    host: "{{ item.networks.0 }}"
+    port: 22
+  loop: "{{ target_vm_info }}"

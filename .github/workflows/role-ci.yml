@@ -1,0 +1,23 @@
+name: role-ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  role-test:
+    runs-on: ubuntu-latest
+    name: role-test
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Install dependencies
+        run: |
+          pip install -r test-requirements.txt
+
+      - name: Run syntax test
+        run: tox -elint

@@ -1,0 +1,23 @@
+---
+extends: default
+
+yaml-files:
+  - "*.yaml"
+  - "*.yml"
+
+ignore: |
+    .git
+    .github
+    .yamllint
+    .tox
+    .gitlab-ci.yml
+
+rules:
+  braces:
+    forbid: true
+  brackets:
+    forbid: true
+  line-length:
+    max: 120
+  indentation:
+    spaces: 2
