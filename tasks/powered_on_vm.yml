@@ -25,8 +25,8 @@
   delay: 10
   loop: "{{ target_vm_info }}"
 
-- name: Wait for port 22 to be open
-  ansible.builtin.wait_for:
-    host: "{{ item.networks.0 }}"
-    port: 22
-  loop: "{{ target_vm_info }}"
+# - name: Wait for port 22 to be open
+#   ansible.builtin.wait_for:
+#     host: "{{ item.networks.0 }}"
+#     port: 22
+#   loop: "{{ target_vm_info }}"
